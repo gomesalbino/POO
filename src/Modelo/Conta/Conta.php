@@ -1,10 +1,13 @@
 <?php
 
-class Conta
+// namespace Modelo\Conta;
+
+abstract class Conta
 {
     private Titular $titular;
-    private float $saldo;
+    protected float $saldo;
     private static $numeroConta = 0;
+    
 
     public function  __construct(Titular $titular)
     {
@@ -18,12 +21,15 @@ class Conta
         self::$numeroConta--;
     }
 
-    public function sacar(float $valorASacar)
+    public function sacar(float $valorASacar): void
     {
-    if ($valorASacar > $this->saldo){
+        $tarifaDeSaque = $valorASacar * $this->percentualTarifa();   
+        $valorDoSaque += $valorASacar + $tarifaDeSaque;
+    if ($valorDoSaque > $this->saldo){
         echo "Você não tem saldo suficiente para saque!";
     }else{
-        $this->saldo -= $valorASacar;
+
+        $this->saldo -= $valorDoSaque;
     }
     }
 
@@ -36,16 +42,6 @@ class Conta
         }
     }
 
-    public function transferencia(float $valorATransferir, Conta $contaDestino) : void
-    {
-    if ($valorATransferir > $this->saldo){
-        echo "Saldo insuficiente para transferencia!";
-        return;
-    }
-    $this->sacar($valorATransferir);
-    $contaDestino->depositar($valorATransferir);
-    }
-    
     public function recuperaCpfTitular(): string 
     {
         return $this->titular->recuperaCpf();
@@ -64,4 +60,5 @@ class Conta
    {
     return self::$numeroConta;
    }
+  abstract protected function percentualTarifa(): float ;
 }
